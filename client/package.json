@@ -4,16 +4,30 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "jest"
   },
   "dependencies": {
     "bulma": "^0.9.3",
     "vue": "^3.2.13"
   },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  },
   "devDependencies": {
+    "@babel/preset-env": "^7.15.6",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/vue": "^6.4.2",
     "@vitejs/plugin-vue": "^1.9.0",
+    "@vue/vue3-jest": "^27.0.0-alpha.1",
+    "jest": "^27.2.4",
     "sass": "^1.42.1",
     "vite": "^2.5.10",
+    "vite-aliases": "^0.8.6",
     "vue-auto-routing": "^1.0.1"
   }
 }
