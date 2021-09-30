@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "bulma": "^0.9.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2"
   },
   "eslintConfig": {
     "root": true,
@@ -27,7 +29,6 @@
     "jest": "^27.2.4",
     "sass": "^1.42.1",
     "vite": "^2.5.10",
-    "vite-aliases": "^0.8.6",
-    "vue-auto-routing": "^1.0.1"
+    "vite-aliases": "^0.8.6"
   }
 }
