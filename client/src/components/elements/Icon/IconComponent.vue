@@ -10,13 +10,6 @@ import { computed, defineComponent, readonly } from "vue";
 const iconPackClass = "las";
 const iconPackPrefix = "la-";
 
-const iconPackSizesMap = readonly({
-    small: "",
-    normal: "la-lg",
-    medium: "la-2x",
-    large: "la-2x",
-});
-
 const possibleSizesMap = readonly({
     small: "is-small",
     normal: "is-normal",
@@ -73,7 +66,7 @@ export default defineComponent({
         const iconDynamicClasses = computed(() => ({
             [iconPackClass]: true,
             [iconPackPrefix + props.name]: true,
-            [iconPackSizesMap[props.size]]: true,
+            [possibleSizesMap[props.size]]: true,
         }));
 
         return {
@@ -84,15 +77,26 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/styles/main.scss";
 
 $icon-colors: $custom-colors !default;
+$icon-sizes: (
+    small: 1rem,
+    normal: 1.25rem,
+    medium: 1.5rem,
+    large: 2rem,
+);
 
 .icon {
-    @each $color, $icon-color-value in $custom-colors {
+    @each $color, $icon-color-value in $icon-colors {
         &.is-#{$color} {
             color: $icon-color-value;
+        }
+    }
+    @each $size-name, $size-value in $icon-sizes {
+        &.is-#{$size-name} i {
+            font-size: $size-value;
         }
     }
 }

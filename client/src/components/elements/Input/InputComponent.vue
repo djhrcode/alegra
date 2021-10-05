@@ -114,6 +114,7 @@ export default defineComponent({
 
         const inputDynamicClasses = computed(() => ({
             input: true,
+            "has-transition": true,
             "is-rounded": props.isRounded,
             [possibleColorsMap[props.color]]: Boolean(props.color),
             [possibleSizesMap[props.size]]: Boolean(props.size),
@@ -126,3 +127,31 @@ export default defineComponent({
     },
 });
 </script>
+
+<style lang="scss">
+@import "@/styles/main.scss";
+
+$input-color: $dark;
+$input-background-color: $white;
+$input-shadow: none;
+$input-border-width: 2px;
+$input-border-color: rgba($dark, 0.2);
+$input-icon-color: rgba($dark, 0.2);
+$input-icon-active-color: $dark;
+
+$input-hover-border-color: rgba($dark, 0.4);
+
+$input-focus-border-color: $primary;
+$input-focus-box-shadow-size: 0 0 0 0.25em;
+$input-focus-box-shadow-color: rgba($primary, 0.1);
+
+
+@import "bulma/sass/form/shared.sass";
+@import "bulma/sass/form/input-textarea.sass";
+@import "bulma/sass/form/tools.sass";
+
+input.input {
+    border-width: $input-border-width;
+    font-weight: 300;
+}
+</style>

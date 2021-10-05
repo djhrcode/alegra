@@ -4,13 +4,29 @@
         :class="dynamicClasses"
         v-bind="{ ...$attrs, ...dynamicAttributes }"
     >
-        <slot></slot>
+        <IconComponent
+            v-if="iconLeft"
+            :name="iconLeft"
+            :size="size"
+        ></IconComponent>
+        <IconComponent
+            v-if="icon"
+            :name="icon"
+            :size="size"
+        ></IconComponent>
+        <span v-if="!icon"><slot></slot></span>
+        <IconComponent
+            v-if="iconRight"
+            :name="iconRight"
+            :size="size"
+        ></IconComponent>
     </component>
 </template>
 
 <script>
 import { computed, defineComponent, markRaw, readonly } from "vue";
 import { RouterLink } from "vue-router";
+import IconComponent from "../Icon/IconComponent.vue";
 
 const possibleElementsMap = readonly({
     router: markRaw(RouterLink),
@@ -44,10 +60,15 @@ const possibleTypes = Object.keys(possibleTypesMap);
 const possibleColors = Object.keys(possibleColorsMap);
 
 export default defineComponent({
+    components: { IconComponent },
     props: {
         href: String,
         to: [String, Object],
 
+        isLoading: {
+            type: Boolean,
+            default: false,
+        },
         isDisabled: {
             type: Boolean,
             default: false,
@@ -56,10 +77,26 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        isFullwidth: {
+            type: Boolean,
+            default: false,
+        },
         element: {
             type: String,
             default: "button",
             validator: (value) => possibleElements.includes(value),
+        },
+        icon: {
+            type: String,
+            default: null,
+        },
+        iconRight: {
+            type: String,
+            default: null,
+        },
+        iconLeft: {
+            type: Boolean,
+            default: null,
         },
         size: {
             type: String,
@@ -90,6 +127,8 @@ export default defineComponent({
             button: true,
             "is-rounded": props.isRounded,
             "is-disabled": props.isDisabled,
+            "is-fullwidth": props.isFullwidth,
+            "is-loading": props.isLoading,
             [possibleColorsMap[props.color]]: Boolean(props.color),
             [possibleSizesMap[props.size]]: Boolean(props.size),
             [possibleTypesMap[props.type]]: Boolean(props.type),

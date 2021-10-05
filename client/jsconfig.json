@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "typeAcquisition": {
+        "include": ["jest"]
+    },
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*"]
+}
