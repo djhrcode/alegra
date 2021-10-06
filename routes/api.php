@@ -8,6 +8,8 @@ use App\Seller\Application\Controllers\SellerImagesSearchController;
 use App\Seller\Application\Controllers\SellerSearchController;
 use App\Seller\Application\Controllers\SellerShowController;
 use App\Seller\Application\Controllers\SellerUpvoteController;
+use App\User\Application\Controllers\UserLoginController;
+use App\User\Application\Controllers\UserRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,3 +42,6 @@ Route::post('/contests/active', ContestActiveCreateController::class)->name('con
 
 Route::get('/contests/{contest}', ContestShowController::class)->name('contests.show');
 Route::get('/contests/{contest}/results', ContestResultsListController::class)->name('contests.results.list');
+
+Route::get('/auth/login', UserLoginController::class)->name('auth.login');
+Route::get('/auth/register', UserRegisterController::class)->name('auth.register');

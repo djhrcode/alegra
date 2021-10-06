@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./resources/js/*"]
         }
     },
     "typeAcquisition": {
         "include": ["jest"]
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["src/**/*"]
+    "include": ["resources/js/**/*"]
 }
