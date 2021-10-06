@@ -1,9 +1,9 @@
 <template>
     <nav class="navbar p-1 p-0-touch" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="https://bulma.io">
+            <a class="navbar-item">
                 <img
-                    src="/img/worldwideimages-logo.svg"
+                    src="@/assets/img/worldwideimages-logo.svg"
                     style="min-height: 30px"
                 />
             </a>
@@ -43,7 +43,7 @@
             <div class="navbar-end">
                 <img
                     class="my-auto"
-                    src="/img/powered-by-alegra-logo.svg"
+                    src="@/assets/img/powered-by-alegra-logo.svg"
                     style="min-height: 24px; max-height: 24px"
                 />
             </div>

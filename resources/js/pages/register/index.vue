@@ -22,13 +22,14 @@
             la imagen a ganar el concurso y lograr así facturar con Alegra.
         </ParagraphComponent>
         <ButtonComponent
-            class="mt-2"
+            class="mt-2 mb-6"
             icon-right="arrow-right"
             size="medium"
             to="/explore"
         >
             Siguiente
         </ButtonComponent>
+        <div class="mb-6"></div>
     </div>
 </template>
 

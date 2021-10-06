@@ -34,7 +34,7 @@
                 v-for="(image, index) in imagesListState"
                 :key="index"
                 :is-disabled="areUpvoteButtonsDisabledState"
-                :picture-src="image.urls.regular"
+                :picture-src="image.urls.small"
                 :picture-alt="image.description"
                 :avatar-src="image.seller.avatar"
                 :avatar-title="image.seller.name"
@@ -49,7 +49,7 @@
 import { computed, defineComponent, onMounted, ref } from "@vue/runtime-core";
 import HeadingComponent from "@/components/elements/Heading/HeadingComponent.vue";
 import ParagraphComponent from "@/components/elements/Paragraph/ParagraphComponent.vue";
-import SellerImageCard from "@/components/sections/Picture/SellerImageCard.vue";
+import SellerImageCard from "@/components/sections/Seller/SellerImageCard.vue";
 import SearchInput from "@/components/sections/Search/SearchInput.vue";
 import { useSellerService } from "@/models/Seller/SellerService";
 

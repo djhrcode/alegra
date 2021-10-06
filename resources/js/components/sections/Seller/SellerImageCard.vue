@@ -50,6 +50,10 @@ export default defineComponent({
         ButtonComponent,
     },
     props: {
+        pictureAspectRatio: {
+            default: null,
+            type: String,
+        },
         pictureSrc: {
             default: "https://bulma.io/images/placeholders/1280x960.png",
             type: String,
