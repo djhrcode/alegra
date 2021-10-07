@@ -186,6 +186,8 @@ return [
         App\Vote\Application\Providers\VoteEventServiceProvider::class,
 
         App\Contest\Application\Providers\ContestServiceProvider::class,
+
+        App\User\Application\Providers\UserServiceProvider::class,
     ],
 
     /*

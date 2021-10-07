@@ -2,29 +2,32 @@
 
 namespace App\User\Domain;
 
-use App\User\Domain\ValueObjects\UserBearerToken;
 use App\User\Domain\ValueObjects\UserEmail;
 use App\User\Domain\ValueObjects\UserId;
 use App\User\Domain\ValueObjects\UserName;
+use App\User\Domain\ValueObjects\UserPassword;
 
-final class User
+final class UserAuthenticable
 {
     public function __construct(
         private UserId $id,
         private UserName $name,
-        private UserEmail $email
+        private UserEmail $email,
+        private UserPassword $password
     ) {
     }
 
     public static function fromPrimitives(
         int $id,
         string $name,
-        string $email
+        string $email,
+        string $password
     ) {
         return new static(
             UserId::fromValue($id),
             UserName::fromValue($name),
-            UserEmail::fromValue($email)
+            UserEmail::fromValue($email),
+            UserPassword::fromValue($password)
         );
     }
 
@@ -41,5 +44,10 @@ final class User
     public function email(): UserEmail
     {
         return $this->email;
+    }
+
+    public function password(): UserPassword
+    {
+        return UserPassword::fromValue(bcrypt($this->password->value()));
     }
 }

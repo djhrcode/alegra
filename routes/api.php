@@ -10,6 +10,7 @@ use App\Seller\Application\Controllers\SellerShowController;
 use App\Seller\Application\Controllers\SellerUpvoteController;
 use App\User\Application\Controllers\UserLoginController;
 use App\User\Application\Controllers\UserRegisterController;
+use App\User\Application\Controllers\UserShowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +35,7 @@ Route::get('/sellers/images', SellerImagesSearchController::class)->name('seller
 
 Route::get('/sellers', SellerSearchController::class)->name('sellers.search');
 Route::get('/sellers/{seller}', SellerShowController::class)->name('sellers.show');
-Route::get('/sellers/{seller}/upvote', SellerUpvoteController::class)->name('sellers.upvote');
+Route::post('/sellers/{seller}/upvote', SellerUpvoteController::class)->name('sellers.upvote');
 
 
 Route::get('/contests/active', ContestActiveShowController::class)->name('contests.active.show');
@@ -43,5 +44,7 @@ Route::post('/contests/active', ContestActiveCreateController::class)->name('con
 Route::get('/contests/{contest}', ContestShowController::class)->name('contests.show');
 Route::get('/contests/{contest}/results', ContestResultsListController::class)->name('contests.results.list');
 
-Route::get('/auth/login', UserLoginController::class)->name('auth.login');
-Route::get('/auth/register', UserRegisterController::class)->name('auth.register');
+Route::post('/auth/login', UserLoginController::class)->name('auth.login');
+Route::post('/auth/register', UserRegisterController::class)->name('auth.register');
+
+Route::get('/account', UserShowController::class)->name('account.show');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\User\Infrastructure\Providers;
+namespace App\User\Application\Providers;
 
 use App\User\Domain\UserRepository;
 use App\User\Infrastructure\Persistence\Eloquent\UserRepository as EloquentUserRepository;
