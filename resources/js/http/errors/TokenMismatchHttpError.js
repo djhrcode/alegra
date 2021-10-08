@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, TOKEN_MISMATCH_HTTP_ERROR } from "../status";
 
 export class TokenMismatchHttpError extends HTTPError {

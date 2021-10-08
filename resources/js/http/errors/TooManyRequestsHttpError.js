@@ -1,4 +1,5 @@
-import { expectsHttpCodeToBe, TOO, TOO_MANY_REQUESTS_HTTP_ERROR_MANY_REQUESTS_HTTP_ERROR } from "../status";
+import { HTTPError } from "ky";
+import { expectsHttpCodeToBe, TOO_MANY_REQUESTS_HTTP_ERROR } from "../status";
 
 export class TooManyRequestsHttpError extends HTTPError {
     /**

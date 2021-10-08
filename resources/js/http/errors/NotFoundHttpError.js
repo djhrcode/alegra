@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, NOT_FOUND_HTTP_ERROR } from "../status";
 
 export class NotFoundHttpError extends HTTPError {

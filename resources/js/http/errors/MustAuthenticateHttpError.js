@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, UNAUTHORIZED_HTTP_ERROR } from "../status";
 
 export class MustAuthenticateHttpError extends HTTPError {

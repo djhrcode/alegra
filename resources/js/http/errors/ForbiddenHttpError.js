@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, FORBIDDEN_HTTP_ERROR } from "../status";
 
 export class ForbiddenHttpError extends HTTPError {

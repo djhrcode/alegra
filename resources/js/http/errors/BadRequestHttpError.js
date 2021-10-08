@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, BAD_REQUEST_HTTP_ERROR } from "../status";
 
 export class BadRequestHttpError extends HTTPError {

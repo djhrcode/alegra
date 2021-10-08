@@ -1,3 +1,4 @@
+import { HTTPError } from "ky";
 import { expectsHttpCodeToBe, UNPROCESSABLE_ENTITY_HTTP_ERROR } from "../status";
 
 export class UnprocessableEntityHttpError extends HTTPError {
