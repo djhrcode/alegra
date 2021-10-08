@@ -188,6 +188,8 @@ return [
         App\Contest\Application\Providers\ContestServiceProvider::class,
 
         App\User\Application\Providers\UserServiceProvider::class,
+
+        App\Invoice\Application\Providers\InvoiceServiceProvider::class,
     ],
 
     /*
