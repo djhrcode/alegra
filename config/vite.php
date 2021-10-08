@@ -36,7 +36,7 @@ return [
     | at build-time.
     | https://vitejs.dev/config/#publicdir
     */
-    'public_directory' => __DIR__.'client/public',
+    'public_directory' => __DIR__.'resources/static',
 
     /*
     |--------------------------------------------------------------------------
