@@ -30,8 +30,6 @@ class SettingRepository implements SettingRepositoryInterface
     public function update(SettingName $name, SettingValue $value): void
     {
         $this->model->newQuery()
-            ->where('name', $name->value())
-            ->firstOrFail()
-            ->updateOrFail(['value' => $value->value()]);
+            ->updateOrCreate(['name' => $name->value()], ['value' => $value->value()]);
     }
 }
