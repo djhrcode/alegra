@@ -14,6 +14,6 @@ class SellerSeeder extends Seeder
      */
     public function run()
     {
-        SellerModel::factory(20)->create();
+        SellerModel::factory((int) env('ALEGRA_SELLERS_TO_SEED', 20))->create();
     }
 }
