@@ -1,5 +1,5 @@
 <template>
-    <div class="card is-shadowless mb-1">
+    <div class="seller-image-card card is-shadowless mb-1">
         <div class="card-image">
             <figure class="image">
                 <img
@@ -28,8 +28,8 @@
                 </div>
                 <div class="media-right">
                     <ButtonComponent
-                        @click="$emit('upvoate')"
-                        icon-right="thumbs-up"
+                        @click="$emit('upvote')"
+                        icon-right="la-thumbs-up"
                         :is-disabled="isDisabled"
                     >
                         Upvote
@@ -90,4 +90,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "@/styles/main.scss";
 @import "bulma/sass/components/card.sass";
+
+.seller-image-card {
+    transition: all 300ms ease-in-out;
+}
 </style>

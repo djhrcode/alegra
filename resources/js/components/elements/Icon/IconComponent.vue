@@ -8,7 +8,7 @@
 import { computed, defineComponent, readonly } from "vue";
 
 const iconPackClass = "las";
-const iconPackPrefix = "la-";
+const iconPackPrefix = "";
 
 const possibleSizesMap = readonly({
     small: "is-small",

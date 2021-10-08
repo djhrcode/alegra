@@ -1,5 +1,9 @@
 <template>
-    <nav class="navbar p-1 p-0-touch" role="navigation" aria-label="main navigation">
+    <nav
+        class="navbar p-1 p-0-touch"
+        role="navigation"
+        aria-label="main navigation"
+    >
         <div class="navbar-brand">
             <a class="navbar-item">
                 <img
@@ -23,24 +27,24 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <!-- <a class="navbar-item"> Home </a>
-
-                <a class="navbar-item"> Documentation </a>
-
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link"> More </a>
-
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item"> About </a>
-                        <a class="navbar-item"> Jobs </a>
-                        <a class="navbar-item"> Contact </a>
-                        <hr class="navbar-divider" />
-                        <a class="navbar-item"> Report an issue </a>
-                    </div>
-                </div> -->
+                <RouterLink
+                    v-for="(link, index) in links"
+                    :key="index"
+                    :to="link.to"
+                    class="navbar-item"
+                >
+                    {{ link.text }}
+                </RouterLink>
             </div>
 
             <div class="navbar-end">
+
+                <button class="navbar-item">
+                    Logout
+                    <span class="icon is-right">
+                        <i class="las la-sign-out-alt"></i>
+                    </span>
+                </button>
                 <img
                     class="my-auto"
                     src="@/assets/img/powered-by-alegra-logo.svg"
@@ -52,18 +56,21 @@
 </template>
 
 <script>
-export default {};
+import { Routes } from "@/plugins/router";
+import { defineComponent, markRaw } from "@vue/runtime-core";
+
+export default defineComponent({
+    data: () => ({
+        links: markRaw([
+            {
+                text: "Explorar",
+                to: { name: Routes.Explore },
+            },
+            {
+                text: "Resultados",
+                to: { name: Routes.Progress },
+            },
+        ]),
+    }),
+});
 </script>
-
-<style scoped lang="scss">
-@import "@/styles/main.scss";
-
-$navbar-padding-vertical: 1rem !default;
-$navbar-padding-horizontal: 1.5rem !default;
-
-@import "bulma/sass/components/navbar.sass";
-
-.navbar {
-    // padding: $navbar-padding-vertical $navbar-padding-horizontal;
-}
-</style>

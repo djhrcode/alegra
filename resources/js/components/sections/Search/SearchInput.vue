@@ -6,7 +6,7 @@
                 @update:modelValue="handleModelValueUpdate"
                 class="search-input__input"
                 size="medium"
-                icon-left="search"
+                icon-left="la-search"
                 placeholder="Busca una imagen..."
                 @keydown.enter="onEnterKeyPressFromInput"
                 :is-loading="isLoading"
@@ -15,7 +15,7 @@
         <div class="column is-narrow is-hidden-touch">
             <ButtonComponent
                 class="search-input__button-text px-4"
-                icon-right="arrow-right"
+                icon-right="la-arrow-right"
                 size="medium"
                 @click="onClickSearchButton"
                 :is-loading="isLoading"
@@ -26,7 +26,7 @@
         <div class="column is-narrow is-hidden-desktop">
             <ButtonComponent
                 class="search-input__button-icon px-2"
-                icon="arrow-right"
+                icon="la-arrow-right"
                 size="medium"
                 @click="onClickSearchButton"
                 :is-loading="isLoading"

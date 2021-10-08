@@ -1,0 +1,17 @@
+
+$navbar-padding-vertical: 1rem !default;
+$navbar-padding-horizontal: 1.5rem !default;
+$navbar-item-color: $dark;
+$navbar-item-hover-color: $primary;
+$navbar-item-active-color: $primary;
+
+@import "bulma/sass/components/navbar.sass";
+
+.navbar {
+    & &-item {
+        font-weight: 300;
+    }
+    & &-item.is-active {
+        font-weight: 500;
+    }
+}

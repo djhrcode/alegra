@@ -47,6 +47,7 @@ const possibleTypesMap = readonly({
 });
 
 const possibleColorsMap = readonly({
+    dark: "is-dark",
     primary: "is-primary",
     secondary: "is-secondary",
     success: "is-success",
@@ -139,6 +140,7 @@ export default defineComponent({
 
             if (props.to) attributes.to = props.to;
             if (props.href) attributes.href = props.href;
+            if (props.isDisabled) attributes.disabled = props.isDisabled;
 
             return attributes;
         });
