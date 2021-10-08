@@ -27,7 +27,8 @@ class SellerImageResource extends Resource
                 'id' => $sellerImage->seller()->id()->value(),
                 'avatar' => $sellerImage->seller()->avatar()->value(),
                 'name' => $sellerImage->seller()->name()->value(),
-                'total_points' => $sellerImage->seller()->points()->value(),
+                'total_points' => $sellerImage->seller()->totalPoints()->value(),
+                'remaining_points' => $sellerImage->seller()->remainingPoints()->value(),
             ],
 
             'links' => [

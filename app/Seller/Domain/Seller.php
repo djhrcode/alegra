@@ -7,7 +7,9 @@ use App\Seller\Domain\ValueObjects\SellerAvatar;
 use App\Seller\Domain\ValueObjects\SellerId;
 use App\Seller\Domain\ValueObjects\SellerName;
 use App\Seller\Domain\ValueObjects\SellerPoints;
+use App\Seller\Domain\ValueObjects\SellerRemainingPoints;
 use App\Seller\Domain\ValueObjects\SellerVotes;
+use App\Seller\Domain\ValueObjects\SellerWinningPoints;
 
 final class Seller
 {
@@ -37,6 +39,11 @@ final class Seller
         );
     }
 
+    public function winningPoints(): SellerWinningPoints
+    {
+        return app(SellerWinningPoints::class);
+    }
+
     public function id(): SellerId
     {
         return $this->id;
@@ -55,6 +62,19 @@ final class Seller
     public function points(): SellerPoints
     {
         return $this->votes->toPoints();
+    }
+
+    public function totalPoints(): SellerPoints
+    {
+        return $this->votes->toPoints();
+    }
+
+    public function remainingPoints(): SellerRemainingPoints
+    {
+        return SellerRemainingPoints::fromPoints(
+            $this->totalPoints(),
+            $this->winningPoints()
+        );
     }
 
     public function alegraId(): ?SellerAlegraId

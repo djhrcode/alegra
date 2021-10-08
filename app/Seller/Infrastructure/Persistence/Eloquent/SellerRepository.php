@@ -9,10 +9,13 @@ use App\Seller\Domain\SellerRepository as SellerRepositoryInterface;
 use App\Seller\Domain\SellerSearchCriteria;
 use App\Seller\Domain\ValueObjects\SellerId;
 use App\Seller\Infrastructure\Persistence\Eloquent\Traits\SellerTransformMethods;
+use App\Setting\Domain\Contest\ContestActiveIdSetting;
 use App\Shared\Domain\PaginationContext;
 use App\User\Domain\User;
+use App\User\Domain\ValueObjects\UserId;
 use App\User\Infrastructure\Persistence\Eloquent\UserModel;
 use App\Vote\Infrastructure\Persistence\Eloquent\VoteModel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 final class SellerRepository implements SellerRepositoryInterface
@@ -21,11 +24,19 @@ final class SellerRepository implements SellerRepositoryInterface
 
     public function __construct(
         private SellerModel $model,
-        private VoteModel $vote
+        private VoteModel $vote,
+        private ContestActiveIdSetting $activeContestId,
     ) {
     }
 
-    public function upvote(User $user, SellerId $sellerId, ContestId $contestId): void
+    private function newBaseQuery(): Builder
+    {
+        return $this->model->newQuery()->withCount([
+            'votes' => fn (Builder $query) => $query->where('contest_id', $this->activeContestId->value()),
+        ]);
+    }
+
+    public function upvote(UserId $upvoterId, SellerId $sellerId, ContestId $contestId): Seller
     {
         /**
          * @var SellerModel
@@ -34,15 +45,25 @@ final class SellerRepository implements SellerRepositoryInterface
         $voteModel = $this->vote->newInstance();
 
         $voteModel->seller()->associate($sellerId->value());
-        $voteModel->user()->associate($user->id()->value());
+        $voteModel->user()->associate($upvoterId->value());
         $voteModel->contest()->associate($contestId->value());
 
         DB::transaction(fn () => $sellerModel->votes()->save($voteModel));
+
+        $sellerModel = $this->newBaseQuery()->findOrFail($sellerId->value());
+
+        return Seller::fromPrimitives(
+            $sellerModel->id,
+            $sellerModel->name,
+            $sellerModel->avatar,
+            $sellerModel->votes_count,
+            $sellerModel->alegra_id,
+        );
     }
 
     public function search(SellerSearchCriteria $criteria): SellerCollection
     {
-        $paginator = $this->model->newQuery()
+        $paginator = $this->newBaseQuery()
             ->orderBy($criteria->orderBy(), $criteria->orderDirection())
             ->paginate(perPage: $criteria->perPage(), page: $criteria->page());
 
@@ -62,7 +83,7 @@ final class SellerRepository implements SellerRepositoryInterface
 
     public function find(SellerId $id): ?Seller
     {
-        $sellerFound = $this->model->find($id->value());
+        $sellerFound = $this->newBaseQuery()->find($id->value());
 
         if (is_null($sellerFound)) return null;
 

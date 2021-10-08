@@ -8,6 +8,8 @@ final class SellerVotes extends IntegerValueObject
 {
     public function toPoints(): SellerPoints
     {
-        return SellerPoints::fromValue($this->value() * 3);
+        return SellerPoints::fromValue(
+            $this->value() * SellerPoints::POINTS_PER_VOTE
+        );
     }
 }

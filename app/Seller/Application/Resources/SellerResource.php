@@ -14,7 +14,8 @@ class SellerResource extends Resource
             'id' => $seller->id()->value(),
             'avatar' => $seller->avatar()->value(),
             'name' => $seller->name()->value(),
-            'points' => $seller->points()->value(),
+            'total_points' => $seller->totalPoints()->value(),
+            'remaining_points' => $seller->remainingPoints()->value(),
 
             'links' => [
                 'self' => route('sellers.show', $seller->id()->value()),

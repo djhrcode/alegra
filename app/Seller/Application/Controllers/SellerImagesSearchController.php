@@ -5,6 +5,7 @@ namespace App\Seller\Application\Controllers;
 use App\Images\Domain\Image;
 use App\Images\Domain\ImageRepository;
 use App\Images\Domain\ImageSearchCriteria;
+use App\Seller\Application\Requests\SellerImagesSearchRequest;
 use App\Seller\Application\Resources\SellerImageResource;
 use App\Seller\Domain\Seller;
 use App\Seller\Domain\SellerImage;
@@ -32,7 +33,7 @@ class SellerImagesSearchController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(SellerImagesSearchRequest $request)
     {
         $imageSearchCriteria = new ImageSearchCriteria(
             query: $request->query('query', null),
