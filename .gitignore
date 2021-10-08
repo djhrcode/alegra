@@ -1,12 +1,14 @@
 /node_modules
 /public/hot
+/public/build
 /public/storage
 /storage/*.key
+/coverage
 /vendor
 .env
 .env.backup
 .phpunit.result.cache
-docker-compose.override.yml
+docker-compose.override.ymlgit
 Homestead.json
 Homestead.yaml
 npm-debug.log
