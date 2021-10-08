@@ -4,7 +4,7 @@ namespace App\Vote\Domain\Events;
 
 use App\Vote\Domain\Vote;
 
-interface VoteEvent
+interface VoteTransactionEvent
 {
     public function vote(): Vote;
 }

@@ -2,8 +2,11 @@
 
 namespace App\Vote\Infrastructure\Persistence\Eloquent;
 
+use App\Contest\Infrastructure\Persistence\Eloquent\ContestModel;
 use App\Seller\Domain\Seller;
+use App\Seller\Infrastructure\Persistence\Eloquent\SellerModel;
 use App\User\Infrastructure\Persistence\Eloquent\UserModel;
+use App\Vote\Application\Events\VoteHasBeenCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,9 +18,23 @@ class VoteModel extends Model
 
     protected $table = "votes";
 
+    protected $dispatchesEvents = [
+        'created' => VoteHasBeenCreated::class,
+    ];
+
     protected static function newFactory()
     {
         return VoteFactory::new();
+    }
+
+    /**
+     * Get the contest that owns the VoteModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contest(): BelongsTo
+    {
+        return $this->belongsTo(ContestModel::class, 'contest_id');
     }
 
     /**

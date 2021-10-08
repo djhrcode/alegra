@@ -2,19 +2,16 @@
 
 namespace App\Vote\Application\Events;
 
-use App\Vote\Domain\Events\VoteEvent;
+use App\Vote\Domain\Events\VoteTransactionEvent;
 use App\Vote\Domain\Vote;
 use App\Vote\Infrastructure\Persistence\Eloquent\Traits\VoteTransformMethods;
 use App\Vote\Infrastructure\Persistence\Eloquent\VoteModel;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class VoteHasBeenCreated implements VoteEvent
+class VoteHasBeenCreated implements VoteTransactionEvent
 {
     use VoteTransformMethods;
     use Dispatchable;
