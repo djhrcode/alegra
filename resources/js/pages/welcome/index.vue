@@ -1,14 +1,17 @@
 <template>
     <div
         class="
-            container is-fullheight
-            is-flex is-flex-direction-column is-justify-content-center
+            container
+            is-fullheight
+            is-flex
+            is-flex-direction-column
+            is-justify-content-center
         "
         style="max-width: 580px"
     >
         <HeadingComponent :size="2">
             ¡Te damos la <br />
-            bienvenida, Sandra!
+            bienvenida, {{ firstName }}!
         </HeadingComponent>
         <ParagraphComponent size="large">
             En <strong>WorldwideImages</strong> nos hemos propuesto conseguir la
@@ -23,7 +26,7 @@
         </ParagraphComponent>
         <ButtonComponent
             class="mt-2 mb-6"
-            icon-right="arrow-right"
+            icon-right="la-arrow-right"
             size="medium"
             to="/explore"
         >
@@ -34,12 +37,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "@vue/runtime-core";
+import { computed, defineComponent, onMounted, ref } from "@vue/runtime-core";
 import ButtonComponent from "@/components/elements/Button/ButtonComponent.vue";
 import HeadingComponent from "@/components/elements/Heading/HeadingComponent.vue";
 import ParagraphComponent from "@/components/elements/Paragraph/ParagraphComponent.vue";
 import NavigationBar from "@/components/sections/Navigation/NavigationBar.vue";
 import InputComponent from "@/components/elements/Input/InputComponent.vue";
+import { useAuthenticationService } from "@/models/Authentication/AuthenticationService.js";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
     components: {
@@ -50,7 +55,21 @@ export default defineComponent({
         InputComponent,
     },
 
-    setup() {},
+    setup() {
+        const stateLoaded = ref(false);
+        const router = useRouter();
+        const authenticationService = useAuthenticationService();
+
+        authenticationService.checkStatus().then((value) => {
+            value ? null : router.push("/login");
+        });
+
+        const firstName = computed(
+            () => authenticationService.account()?.name?.split(" ")[0]
+        );
+
+        return { stateLoaded, firstName };
+    },
 });
 </script>
 

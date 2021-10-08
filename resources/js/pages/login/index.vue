@@ -9,21 +9,11 @@
         "
         style="max-width: 460px"
     >
-        <HeadingComponent size="4"> Regístrate </HeadingComponent>
+        <HeadingComponent size="4"> Ingresa </HeadingComponent>
         <ParagraphComponent size="large" class="mb-3">
             ¡Ayúdanos a conseguir las mejores imágenes del mundo! Pero primero,
-            crea una cuenta para votar
+            ingresa con tu cuenta por favor
         </ParagraphComponent>
-
-        <ParagraphComponent class="mb-1">
-            <strong>Nombre completo</strong>
-        </ParagraphComponent>
-        <InputComponent
-            v-model="formLoginData.name"
-            class="mb-3"
-            placeholder="Elizabeth Gomez"
-            size="medium"
-        ></InputComponent>
 
         <ParagraphComponent class="mb-1">
             <strong>Correo electrónico</strong>
@@ -35,7 +25,6 @@
             placeholder="youremail@example.com"
             size="medium"
         ></InputComponent>
-
         <ParagraphComponent class="mb-1">
             <strong>Contraseña</strong>
         </ParagraphComponent>
@@ -51,19 +40,9 @@
             class="mt-2"
             icon-right="la-sign-in-alt"
             size="medium"
-            @click="onClickRegister"
+            @click="onClickLogin"
         >
-            Registrarme
-        </ButtonComponent>
-        <ButtonComponent
-            class="mt-2 mb-6"
-            icon-right="la-user-circle"
-            color="primary"
-            type="inverted"
-            to="/login"
-            @click="onClickRegister"
-        >
-            Inicia sesión
+            Iniciar sesión
         </ButtonComponent>
         <div class="mb-6"></div>
     </div>
@@ -78,12 +57,9 @@ import NavigationBar from "@/components/sections/Navigation/NavigationBar.vue";
 import InputComponent from "@/components/elements/Input/InputComponent.vue";
 import { useNotificationStore } from "@/models/Notification/NotificationStore.js";
 import { useAuthenticationService } from "@/models/Authentication/AuthenticationService";
-import { UnprocessableEntityError } from "@/helpers/http";
-import {
-    createAuthenticable,
-    createCredentials,
-} from "@/models/Authentication/AuthenticationFactories";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { createCredentials } from "@/models/Authentication/AuthenticationFactories";
+import { useRouter } from "vue-router";
+import { UnprocessableEntityHttpError } from "@/http/errors/UnprocessableEntityHttpError";
 
 export default defineComponent({
     components: {
@@ -101,55 +77,45 @@ export default defineComponent({
         });
 
         const formLoginData = reactive(
-            createAuthenticable({
-                name: null,
-                email: null,
-                password: null,
-            })
+            createCredentials({ email: null, password: null })
         );
 
+        const router = useRouter();
         const notificationStore = useNotificationStore();
         const authenticationService = useAuthenticationService();
 
-        onBeforeRouteUpdate((to, from, next) => {
-            useAuthenticationService()
-                .checkStatus()
-                .then((value) => (!value ? next(to) : next("/welcome")));
-        });
+        // authenticationService.checkStatus().then((value) => {
+        //     value ? router.push("/welcome") : null;
+        // });
 
-        async function onRegisterErrorResponse(error) {
+        async function onLoginErrorResponse(error) {
             notificationStore.notify({
                 color: "danger",
                 title: "Ups, parece que tenemos un error :(",
             });
 
-            if (!(error instanceof UnprocessableEntityError)) throw error;
+            if (!(error instanceof UnprocessableEntityHttpError)) throw error;
 
             formLoginErrors.errors = error.json().errors;
             formLoginErrors.message = error.json().message;
         }
 
-        async function onRegisterSuccessResponse() {
-            useRouter().push("/welcome");
+        async function onLoginSuccessResponse() {
+            router.push("/welcome");
 
             notificationStore.notify({
-                title: "¡Genial! Te has registrado sin problemas",
+                title: "¡Genial! Has iniciado sesión exitosamente",
             });
         }
 
-        async function onClickRegister() {
+        async function onClickLogin() {
             authenticationService
-                .register(
-                    createAuthenticable({
-                        ...formLoginData,
-                        password_confirm: formLoginData.password,
-                    })
-                )
-                .then(onRegisterSuccessResponse)
-                .catch(onRegisterErrorResponse);
+                .login(createCredentials(formLoginData))
+                .then(onLoginSuccessResponse)
+                .catch(onLoginErrorResponse);
         }
 
-        return { formLoginData, formLoginErrors, onClickRegister };
+        return { formLoginData, formLoginErrors, onClickLogin };
     },
 });
 </script>

@@ -6,7 +6,8 @@
     >
         <div
             class="
-                pt-6 is-flex
+                pt-6
+                is-flex
                 is-fullwidth
                 is-flex-direction-column
                 is-align-items-center
@@ -38,8 +39,9 @@
                 :picture-alt="image.description"
                 :avatar-src="image.seller.avatar"
                 :avatar-title="image.seller.name"
-                :avatar-subtitle="`${image.seller.total_points} puntos acumulados de 20`"
-                @upvote="() => upvotePictureBySellerId(image.seller.id)"
+                :avatar-subtitle="`${image.seller.total_points} puntos, ${image.seller.remaining_points} para ganar`"
+                :style="getSellerImageCardStyle(index)"
+                @upvote="() => upvotePictureBySellerId(image.seller.id, index)"
             ></SellerImageCard>
         </masonry>
     </div>
@@ -51,7 +53,10 @@ import HeadingComponent from "@/components/elements/Heading/HeadingComponent.vue
 import ParagraphComponent from "@/components/elements/Paragraph/ParagraphComponent.vue";
 import SellerImageCard from "@/components/sections/Seller/SellerImageCard.vue";
 import SearchInput from "@/components/sections/Search/SearchInput.vue";
-import { useSellerService } from "@/models/Seller/SellerService";
+import { useSellerService } from "@/models/Seller/SellerService.js";
+import { useNotificationStore } from "@/models/Notification/NotificationStore";
+import { createNotification } from "@/models/Notification/NotificationFactories";
+import { createSellerImage } from "@/models/Seller/SellerImage";
 
 export default defineComponent({
     components: {
@@ -63,53 +68,131 @@ export default defineComponent({
 
     setup() {
         const sellerService = useSellerService();
+        const notificationStore = useNotificationStore();
 
+        /**
+         * Upvote business logic
+         */
+        const upvotingHasStarted = ref(false);
+        const upvotingHasErrored = ref(false);
+        const upvotingHasFinished = ref(false);
+        const lastIndexUpvoted = ref(null);
+
+        const areUpvoteButtonsDisabledState = computed(
+            () => upvotingHasStarted.value || upvotingHasFinished.value
+        );
+
+        /**
+         * Image searching business logic
+         */
         const imagesListState = ref([]);
-        const currentPageState = ref(0);
-
         const isSearchLoadingState = ref(false);
-        const areUpvoteButtonsDisabledState = ref(false);
 
-        const imagesListIsEmpty = computed(() => !!(imagesListState.value.length));
+        const imagesListIsEmpty = computed(
+            () => !!imagesListState.value.length
+        );
 
         const startSearchLoading = () => (isSearchLoadingState.value = true);
         const stopSearchLoading = () => (isSearchLoadingState.value = false);
 
-        const markUpvoteButtonsAsDisabled = () =>
-            (areUpvoteButtonsDisabledState.value.value = true);
-
-        const unmarkUpvoteButtonsAsDisabled = () =>
-            (areUpvoteButtonsDisabledState.value.value = false);
-
-        const searchPictureByQuery = async (query) => {
-            startSearchLoading();
-
-            imagesListState.value = await sellerService
-                .search({
-                    query,
-                    page: currentPageState.value++,
-                })
-                .finally(stopSearchLoading);
+        const resetUpvotingProcess = () => {
+            upvotingHasStarted.value = false;
+            upvotingHasFinished.value = false;
+            upvotingHasErrored.value = false;
+            lastIndexUpvoted.value = null;
         };
 
-        const upvotePictureBySellerId = async (sellerId) => {
-            markUpvoteButtonsAsDisabled();
+        const startUpvotingProcess = () => {
+            upvotingHasStarted.value = true;
+            upvotingHasFinished.value = false;
+        };
+
+        const finishUpvotingProcess = (index = null) => {
+            upvotingHasFinished.value = true;
+            lastIndexUpvoted.value = index;
+
+            notificationStore.notify(
+                createNotification({
+                    delay: 6000,
+                    title: "¡Super! A nosotros también nos encanta esa imagen",
+                    message:
+                        "Tu voto se ha realizado exitosamente. Haz una nueva busqueda para votar otra vez",
+                })
+            );
+        };
+
+        const stopWithErrorUpvotingProcess = (error) => {
+            upvotingHasErrored.value = true;
+            upvotingHasStarted.value = false;
+            upvotingHasFinished.value = false;
+
+            notificationStore.notify(
+                createNotification({
+                    delay: 6000,
+                    color: "danger",
+                    title: "Ups, algo no salió bien :(",
+                    message:
+                        "Ha ocurrido un error en tu voto, por favor inténtalo de nuevo",
+                })
+            );
+
+            throw error;
+        };
+
+        const hydrateSellerImageState = (index, newSellerData) => {
+            const currentSellerState = createSellerImage(
+                imagesListState.value[index]
+            );
+
+            const newSellerState = createSellerImage({
+                ...currentSellerState,
+                seller: newSellerData,
+            });
+
+            imagesListState.value.splice(index, 1, newSellerState);
+        };
+
+        const upvotePictureBySellerId = async (sellerId, index) => {
+            startUpvotingProcess();
 
             await sellerService
                 .upVote(sellerId)
-                .finally(unmarkUpvoteButtonsAsDisabled);
+                .then(hydrateSellerImageState.bind(null, index))
+                .then(finishUpvotingProcess.bind(null, index))
+                .catch(stopWithErrorUpvotingProcess);
+        };
+
+        const searchPictureByQuery = async (query) => {
+            resetUpvotingProcess();
+            startSearchLoading();
+
+            imagesListState.value = await sellerService
+                .search({ query })
+                .finally(stopSearchLoading);
         };
 
         const heroSectionStyle = computed(() => ({
-            transition: 'all 300ms ease-in-out',
-            minHeight: imagesListIsEmpty.value ? '400px' : '60vh',
-            paddingBottom: imagesListIsEmpty.value ? '6rem' : '3rem'
+            transition: "all 300ms ease-in-out",
+            minHeight: imagesListIsEmpty.value ? "400px" : "60vh",
+            paddingBottom: imagesListIsEmpty.value ? "6rem" : "3rem",
         }));
+
+        const getSellerImageCardStyle = (index) => {
+            if (!Number.isInteger(lastIndexUpvoted.value)) return {};
+            if (!upvotingHasFinished.value) return {};
+
+            return {
+                opacity: index === lastIndexUpvoted.value ? 1 : 0.5,
+                filter: index === lastIndexUpvoted.value ? "" : "blur(10px)",
+            };
+        };
 
         return {
             imagesListState,
             imagesListIsEmpty,
             heroSectionStyle,
+            lastIndexUpvoted,
+            getSellerImageCardStyle,
 
             isSearchLoadingState,
             areUpvoteButtonsDisabledState,
