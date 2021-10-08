@@ -1,6 +1,6 @@
-import { createJsonDataResponse, useHttpClient } from "@/libs/http";
-import { createSeller } from "./Seller";
-import { createImageUrls, createSellerImage } from "./SellerImage";
+import { createJsonDataResponse, useHttpClient } from "@/helpers/http.js";
+import { createSeller } from "./Seller.js";
+import { createImageUrls, createSellerImage } from "./SellerImage.js";
 
 export const useSellerService = () => {
     const search = async ({
@@ -24,17 +24,10 @@ export const useSellerService = () => {
 
     const upVote = async (sellerId = String()) => {
         const response = await useHttpClient()
-            .put(`sellers/${sellerId}/upvote`)
+            .post(`sellers/${sellerId}/upvote`)
             .json();
 
-        return createJsonDataResponse(response).data.map(
-            ({ urls, seller, ...image }) =>
-                createSellerImage({
-                    urls: createImageUrls(urls),
-                    seller: createSeller(seller),
-                    ...image,
-                })
-        );
+        return createSeller(createJsonDataResponse(response).data);
     };
 
     return { search, upVote };

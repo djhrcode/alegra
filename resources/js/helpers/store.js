@@ -1,3 +1,5 @@
+import { Store } from "vuex";
+
 /**
  * @typedef {{getModule: () => import("vuex").Module, getNamespace: () => ?string}} StoreModule
  */
@@ -12,6 +14,23 @@
 export const createStoreModule = (namespace, module) => ({
     getModule: () => module,
     getNamespace: () => namespace,
+});
+
+/**
+ * @param {Store} store
+ */
+export const useStoreWithNamespace = (namespace, store) => ({
+    state() {
+        return store.state[namespace];
+    },
+
+    commit(type, payload, options) {
+        return store.commit(`${namespace}/${type}`, payload, options);
+    },
+
+    dispatch(action, payload, options) {
+        return store.dispatch(`${namespace}/${action}`, payload, options);
+    },
 });
 
 /**
