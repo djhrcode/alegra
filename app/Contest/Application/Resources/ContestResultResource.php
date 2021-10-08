@@ -16,7 +16,10 @@ class ContestResultResource extends Resource
                 'id' => $contestResult->seller()->id()->value(),
                 'avatar' => $contestResult->seller()->avatar()->value(),
                 'name' => $contestResult->seller()->name()->value(),
-                'total_points' => $contestResult->seller()->points()->value(),
+                'is_winner' => $contestResult->sellerIsWinner(),
+                'total_points' => $contestResult->seller()->totalPoints()->value(),
+                'remaining_points' => $contestResult->seller()->remainingPoints()->value(),
+                'winning_points' => $contestResult->seller()->winningPoints()->value()
             ],
 
             'links' => [
