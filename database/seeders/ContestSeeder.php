@@ -24,22 +24,28 @@ class ContestSeeder extends Seeder
      */
     public function run()
     {
-        $nextContestId = number_format($this->contest->max('id') + 1, 1);
+        $this->createNewActiveContest();
+        $this->createNewContestWinningPoints();
+    }
 
+    public function createNewActiveContest()
+    {
         $currentContest = $this->contest->newQuery()->firstOrCreate(
-            [
-                'status' => ContestStatus::OPEN,
-            ],
-            [
-                'name' => 'Vendedores a Correr ' . $nextContestId,
-            ]
+            ['status' => ContestStatus::OPEN],
+            ['name' => 'Vendedores a Correr']
         );
 
-        $this->setting->newQuery()->firstOrCreate(
-            [
-                'name' => SettingName::CONTEST_ACTIVE_ID,
-                'value' => $currentContest->id
-            ]
-        );
+        $this->setting->newQuery()->firstOrCreate([
+            'value' => $currentContest->id,
+            'name' => SettingName::CONTEST_ACTIVE_ID,
+        ]);
+    }
+
+    public function createNewContestWinningPoints()
+    {
+        $this->setting->newQuery()->firstOrCreate([
+            'value' => 20,
+            'name' => SettingName::CONTEST_WINNING_POINTS,
+        ]);
     }
 }
