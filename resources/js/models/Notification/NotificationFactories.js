@@ -12,5 +12,5 @@ export const createNotification = ({
     message = String(),
     color = "primary",
     isLight = false,
-    delay = Number()
+    delay = Number(3000)
 }) => ({ id: id || createNotificationId(), title, message, color, isLight, delay });

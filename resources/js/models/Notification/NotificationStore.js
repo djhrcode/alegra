@@ -55,10 +55,10 @@ export const NotificationStore = createStoreModule(NotificationNamespace, {
     },
 });
 
-export const useNotificationStore = () => {
+export const useNotificationStore = (store = useStore()) => {
     const notificationStore = useStoreWithNamespace(
         NotificationNamespace,
-        useStore()
+        store
     );
 
     const notifications = computed(() => notificationStore.state().items);
