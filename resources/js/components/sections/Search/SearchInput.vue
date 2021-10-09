@@ -19,6 +19,7 @@
                 size="medium"
                 @click="onClickSearchButton"
                 :is-loading="isLoading"
+                :is-disabled="!searchQueryValue"
             >
                 Buscar
             </ButtonComponent>
@@ -30,6 +31,7 @@
                 size="medium"
                 @click="onClickSearchButton"
                 :is-loading="isLoading"
+                :is-disabled="!searchQueryValue"
             ></ButtonComponent>
         </div>
     </div>
