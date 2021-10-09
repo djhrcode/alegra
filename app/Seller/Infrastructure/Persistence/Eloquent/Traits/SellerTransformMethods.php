@@ -24,7 +24,7 @@ trait SellerTransformMethods
             $sellerModel->id,
             $sellerModel->name,
             $sellerModel->avatar,
-            $sellerModel->votes_count,
+            $sellerModel->votes_count ?? 0,
             $sellerModel->alegra_id
         );
     }
