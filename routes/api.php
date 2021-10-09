@@ -2,6 +2,7 @@
 
 use App\Contest\Application\Controllers\ContestActiveCreateController;
 use App\Contest\Application\Controllers\ContestActiveShowController;
+use App\Contest\Application\Controllers\ContestResetController;
 use App\Contest\Application\Controllers\ContestResultsListController;
 use App\Contest\Application\Controllers\ContestShowController;
 use App\Seller\Application\Controllers\SellerImagesSearchController;
@@ -38,6 +39,7 @@ Route::get('/sellers/{seller}', SellerShowController::class)->name('sellers.show
 Route::post('/sellers/{seller}/upvote', SellerUpvoteController::class)->name('sellers.upvote');
 
 
+Route::post('/contests/active/reset', ContestResetController::class)->name('contests.active.reset');
 Route::get('/contests/active', ContestActiveShowController::class)->name('contests.active.show');
 Route::post('/contests/active', ContestActiveCreateController::class)->name('contests.active.create');
 
