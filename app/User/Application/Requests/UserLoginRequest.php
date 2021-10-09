@@ -31,6 +31,19 @@ class UserLoginRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'email.string' => 'Ingrese un correo electrónico válido',
+            'email.email' => 'Ingrese un correo electrónico válido',
+            'email.required' => 'Ingrese un correo electrónico válido',
+            'email.max' => 'El correo electrónico es muy largo',
+            'password.required' => 'Ingrese una contraseña válida',
+            'password.string' => 'Ingrese una contraseña válida',
+            'password.min' => 'La contraseña debe tener al menos 8 carácteres',
+        ];
+    }
+
     public function value(): UserCredentials
     {
         $data = $this->validated();
