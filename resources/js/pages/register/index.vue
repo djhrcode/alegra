@@ -6,71 +6,127 @@
             is-flex
             is-flex-direction-column
             is-justify-content-center
+            pt-6 pt-4-mobile
         "
         style="max-width: 460px"
     >
-        <HeadingComponent size="4"> Regístrate </HeadingComponent>
+        <HeadingComponent size="4"> Crea una cuenta</HeadingComponent>
+
         <ParagraphComponent size="large" class="mb-3">
             ¡Ayúdanos a conseguir las mejores imágenes del mundo! Pero primero,
-            crea una cuenta para votar
+            crea una cuenta para ingresar por favor
         </ParagraphComponent>
 
+        <!--
+            Email form field with InputComponent
+         -->
         <ParagraphComponent class="mb-1">
-            <strong>Nombre completo</strong>
+            <strong>Nombre y apellido</strong>
         </ParagraphComponent>
         <InputComponent
-            v-model="formLoginData.name"
+            v-model="formRegisterData.name"
+            name="name"
             class="mb-3"
-            placeholder="Elizabeth Gomez"
+            icon-right="la-user"
+            placeholder="John Smith"
             size="medium"
+            :is-disabled="hasLoadingState"
+            :error="formRegisterErrors?.errors?.name?.at(0)"
+            :has-error="!!formRegisterErrors.errors?.name?.length"
         ></InputComponent>
 
+        <!--
+            Email form field with InputComponent
+         -->
         <ParagraphComponent class="mb-1">
             <strong>Correo electrónico</strong>
         </ParagraphComponent>
         <InputComponent
-            v-model="formLoginData.email"
+            v-model="formRegisterData.email"
+            name="email"
             class="mb-3"
             icon-right="la-envelope"
             placeholder="youremail@example.com"
             size="medium"
+            :is-disabled="hasLoadingState"
+            :error="formRegisterErrors?.errors?.email?.at(0)"
+            :has-error="!!formRegisterErrors.errors?.email?.length"
         ></InputComponent>
 
+        <!--
+            Password form field with InputComponent
+         -->
         <ParagraphComponent class="mb-1">
             <strong>Contraseña</strong>
         </ParagraphComponent>
         <InputComponent
-            v-model="formLoginData.password"
-            class="mb-2"
-            type="password"
-            icon-right="la-eye-slash"
-            placeholder="Password"
+            v-model="formRegisterData.password"
+            name="password"
             size="medium"
+            class="mb-3"
+            placeholder="Password"
+            icon-right-class="is-clickable"
+            :icon-right="isPasswordVisible ? 'la-eye' : 'la-eye-slash'"
+            :type="isPasswordVisible ? 'text' : 'password'"
+            :is-disabled="hasLoadingState"
+            :error="formRegisterErrors?.errors?.password?.at(0)"
+            :has-error="!!formRegisterErrors.errors?.password?.length"
+            @click:icon-right="togglePasswordVisibility"
         ></InputComponent>
+
+        <!--
+            Password form field with InputComponent
+         -->
+        <ParagraphComponent class="mb-1">
+            <strong>Confirmar contraseña</strong>
+        </ParagraphComponent>
+        <InputComponent
+            v-model="formRegisterData.password_confirm"
+            name="password_confirm"
+            size="medium"
+            class="mb-3"
+            placeholder="Password"
+            icon-right-class="is-clickable"
+            :icon-right="isPasswordVisible ? 'la-eye' : 'la-eye-slash'"
+            :type="isPasswordVisible ? 'text' : 'password'"
+            :is-disabled="hasLoadingState"
+            :error="formRegisterErrors?.errors?.password_confirm?.at(0)"
+            :has-error="!!formRegisterErrors.errors?.password_confirm?.length"
+            @click:icon-right="togglePasswordVisibility"
+        ></InputComponent>
+
+        <!--
+            Login form submit button with ButtonComponent
+         -->
         <ButtonComponent
             class="mt-2"
-            icon-right="la-sign-in-alt"
+            icon-right="la-user-circle"
             size="medium"
+            :is-loading="hasLoadingState"
             @click="onClickRegister"
         >
-            Registrarme
+            Crear mi cuenta
         </ButtonComponent>
+
+        <ParagraphComponent size="small" class="mb-1 mt-3 has-text-centered">
+            ¿Ya tienes una cuenta?
+        </ParagraphComponent>
         <ButtonComponent
-            class="mt-2 mb-6"
-            icon-right="la-user-circle"
-            color="primary"
-            type="inverted"
             to="/login"
-            @click="onClickRegister"
+            color="dark"
+            type="inverted"
+            icon-right="la-sign-in-alt"
+            :is-loading="hasLoadingState"
         >
             Inicia sesión
         </ButtonComponent>
-        <div class="mb-6"></div>
+
+        <div class="mb-6 mt-6"></div>
     </div>
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
+import { defineComponent, onMounted, reactive, ref } from "@vue/runtime-core";
 import ButtonComponent from "@/components/elements/Button/ButtonComponent.vue";
 import HeadingComponent from "@/components/elements/Heading/HeadingComponent.vue";
 import ParagraphComponent from "@/components/elements/Paragraph/ParagraphComponent.vue";
@@ -78,12 +134,12 @@ import NavigationBar from "@/components/sections/Navigation/NavigationBar.vue";
 import InputComponent from "@/components/elements/Input/InputComponent.vue";
 import { useNotificationStore } from "@/models/Notification/NotificationStore.js";
 import { useAuthenticationService } from "@/models/Authentication/AuthenticationService";
-import { UnprocessableEntityError } from "@/helpers/http";
 import {
     createAuthenticable,
     createCredentials,
 } from "@/models/Authentication/AuthenticationFactories";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+import { UnprocessableEntityHttpError } from "@/http/errors/UnprocessableEntityHttpError";
 
 export default defineComponent({
     components: {
@@ -95,61 +151,84 @@ export default defineComponent({
     },
 
     setup() {
-        const formLoginErrors = reactive({
+        const formRegisterErrors = reactive({
             message: null,
             errors: {},
         });
 
-        const formLoginData = reactive(
+        const formRegisterData = reactive(
             createAuthenticable({
                 name: null,
                 email: null,
                 password: null,
+                password_confirm: null,
             })
         );
 
+        const isPasswordVisible = ref(false);
+        const togglePasswordVisibility = () =>
+            (isPasswordVisible.value = !isPasswordVisible.value);
+
+        const router = useRouter();
         const notificationStore = useNotificationStore();
         const authenticationService = useAuthenticationService();
+        const hasLoadingState = ref(false);
 
-        onBeforeRouteUpdate((to, from, next) => {
-            useAuthenticationService()
-                .checkStatus()
-                .then((value) => (!value ? next(to) : next("/welcome")));
-        });
+        const startLoadingState = () => (hasLoadingState.value = true);
 
-        async function onRegisterErrorResponse(error) {
+        const stopLoadingState = () => (hasLoadingState.value = false);
+
+        async function onLoginErrorResponse(error) {
+            console.log("Login has emitted an error", error);
+
             notificationStore.notify({
                 color: "danger",
                 title: "Ups, parece que tenemos un error :(",
             });
 
-            if (!(error instanceof UnprocessableEntityError)) throw error;
+            if (!(error instanceof UnprocessableEntityHttpError)) throw error;
 
-            formLoginErrors.errors = error.json().errors;
-            formLoginErrors.message = error.json().message;
-        }
+            const errorResponse = await error.json();
 
-        async function onRegisterSuccessResponse() {
-            useRouter().push("/welcome");
+            formRegisterErrors.errors = errorResponse.errors;
+            formRegisterErrors.message = errorResponse.message;
 
             notificationStore.notify({
-                title: "¡Genial! Te has registrado sin problemas",
+                color: "danger",
+                title: "Los datos ingresados son incorrectos",
+                message: errorResponse.getFirstError(),
             });
         }
 
-        async function onClickRegister() {
-            authenticationService
-                .register(
-                    createAuthenticable({
-                        ...formLoginData,
-                        password_confirm: formLoginData.password,
-                    })
-                )
-                .then(onRegisterSuccessResponse)
-                .catch(onRegisterErrorResponse);
+        function onLoginSuccessResponse() {
+            router.push("/welcome");
+
+            notificationStore.notify({
+                title: "¡Genial! Has creado tu cuenta exitosamente",
+            });
+
+            return;
         }
 
-        return { formLoginData, formLoginErrors, onClickRegister };
+        function onClickRegister() {
+            startLoadingState();
+
+            authenticationService
+                .register(createAuthenticable(formRegisterData))
+                .then(onLoginSuccessResponse)
+                .catch((error) => onLoginErrorResponse(error))
+                .finally(stopLoadingState);
+        }
+
+        return {
+            hasLoadingState,
+            formRegisterData,
+            formRegisterErrors,
+            onClickRegister,
+
+            isPasswordVisible,
+            togglePasswordVisibility,
+        };
     },
 });
 </script>
