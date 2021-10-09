@@ -1,0 +1,33 @@
+
+$primary: #00b19d;
+$secondary: #ff9f03;
+$light: #fcfcfc;
+$dark: #00535e;
+
+$custom-colors: (
+    primary: $primary,
+    secondary: $secondary,
+    dark: $dark,
+    light: $light,
+);
+
+$radius: 10px;
+$size-7: 0.875rem;
+$size-small: 0.875rem;
+
+$family-primary: "Roboto";
+
+$scheme-main: $light;
+$scheme-invert: $dark;
+
+$spacing-values: (
+    "0": 0,
+    "1": 1rem,
+    "2": 1.5rem,
+    "3": 2.25rem,
+    "4": 3rem,
+    "5": 3.75rem,
+    "6": 4.5rem,
+    "auto": auto,
+) !default;
+

@@ -1,0 +1,27 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#app {
+    margin: 0;
+    height: 100%;
+    display: block;
+}
+
+strong,
+span,
+del,
+mark {
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+}
+
+strong,
+b {
+    font-weight: 500;
+}

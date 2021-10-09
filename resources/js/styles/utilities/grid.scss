@@ -1,0 +1,69 @@
+
+$grid-columns: 12;
+
+$grid-gaps: (
+    0: none,
+    1: 0.75rem,
+    2: 1rem,
+    3: 1.5rem,
+    4: 1.875rem,
+);
+
+@mixin grid-column($columns, $suffix: "") {
+    @for $columns from 1 to $grid-columns {
+        &.is-#{$columns}-columns#{$suffix} {
+            grid-template-columns: repeat($columns, 1fr);
+        }
+    }
+}
+
+@mixin grid-gap($columns, $suffix: "") {
+    @each $gap, $value in $grid-gaps {
+        &.is-#{$gap}-gap#{$suffix} {
+            gap: $value;
+        }
+    }
+}
+
+.grid {
+    display: grid;
+    gap: map.get($grid-gaps, 3);
+
+    @include grid-column($grid-columns);
+
+    @include fullhd() {
+        @include grid-column($grid-columns, "-fullhd");
+    }
+
+    @include widescreen-only() {
+        @include grid-column($grid-columns, "-widescreen-only");
+    }
+
+    @include widescreen() {
+        @include grid-column($grid-columns, "-widescreen");
+    }
+
+    @include desktop-only() {
+        @include grid-column($grid-columns, "-desktop-only");
+    }
+
+    @include desktop() {
+        @include grid-column($grid-columns, "-desktop");
+    }
+
+    @include touch() {
+        @include grid-column($grid-columns, "-touch");
+    }
+
+    @include tablet-only() {
+        @include grid-column($grid-columns, "-tablet-only");
+    }
+
+    @include tablet() {
+        @include grid-column($grid-columns, "-tablet");
+    }
+
+    @include mobile() {
+        @include grid-column($grid-columns, "-mobile");
+    }
+}

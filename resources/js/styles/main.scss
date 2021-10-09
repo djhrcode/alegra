@@ -1,273 +1,54 @@
 @use "sass:map";
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300;1,500&display=swap");
+@import "fonts/roboto.scss";
 @import "@/assets/icons/line-awesome/css/line-awesome.min.css";
 
-$primary: #00b19d;
-$secondary: #ff9f03;
-$light: #fcfcfc;
-$dark: #00535e;
+@import "variables.scss";
 
-$custom-colors: (
-    primary: $primary,
-    secondary: $secondary,
-    dark: $dark,
-    light: $light,
-);
-
-$radius: 10px;
-$size-7: 0.875rem;
-$size-small: 0.875rem;
-
-$family-primary: "Roboto";
-
-$scheme-main: $light;
-$scheme-invert: $dark;
-
+/**
+ * Bulma CSS Library Imports
+ *
+ * Use this section to import all Bulma individual modules
+ * you may need include in the application. For more info see:
+ *
+ * Modularity: https://bulma.io/documentation/overview/modular/
+ */
 @import "bulma/sass/utilities/_all.sass";
 @import "bulma/sass/base/_all.sass";
 @import "bulma/sass/grid/_all.sass";
-
-$spacing-values: (
-    "0": 0,
-    "1": 1rem,
-    "2": 1.5rem,
-    "3": 2.25rem,
-    "4": 3rem,
-    "5": 3.75rem,
-    "6": 4.5rem,
-    "auto": auto,
-) !default;
-
 @import "bulma/sass/helpers/_all.sass";
 @import "bulma/sass/elements/container.sass";
 @import "bulma/sass/elements/icon.sass";
 @import "bulma/sass/elements/image.sass";
+@import "bulma/sass/elements/progress.sass";
 @import "bulma/sass/components/media.sass";
 @import "bulma/sass/utilities/mixins.sass";
 
+/**
+ * Custom SASS Utilities Modules
+ *
+ * Use this section to import all custom SASS utilities
+ * to use in the application such as spacing, grid, transitions, etc
+ */
+@import "utilities/reset.scss";
+@import "utilities/grid.scss";
+@import "utilities/spacing.scss";
+@import "utilities/transitions.scss";
 
-@import "../components/sections/Navigation/navigation-bar.scss";
+/**
+ * Vue Components SASS Modules
+ *
+ * Use this section to import Vue Components SASS modules
+ * you may need to include in final build.
+ */
+@import "../components/sections/Navigation/index.scss";
 
-html,
-body {
-    margin: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
 
-#app {
-    margin: 0;
-    height: 100%;
-    display: block;
-}
 
-strong,
-span,
-del,
-mark {
-    font-size: inherit;
-    font-family: inherit;
-    color: inherit;
-}
 
-strong,
-b {
-    font-weight: 500;
-}
-
-$transition-default-duration: 200ms;
-$transition-default-timing-function: ease-in-out;
-
-$transition-durations: (
-    "fast": 100ms,
-    "normal": 200ms,
-    "medium": 300ms,
-    "slow": 400ms,
-);
-
-.has-transition {
-    transition-property: all;
-    transition-duration: $transition-default-duration;
-    transition-timing-function: $transition-default-timing-function;
-
-    @each $duration-name, $duration-value in $transition-durations {
-        .is-#{$duration-name} {
-            transition-duration: $duration-value;
-        }
-    }
-}
-
-@mixin spacing-utilities($suffix: "") {
-    .is-marginless#{$suffix} {
-        margin: 0 !important;
-    }
-
-    .is-paddingless#{$suffix} {
-        padding: 0 !important;
-    }
-
-    @each $property, $shortcut in $spacing-shortcuts {
-        @each $name, $value in $spacing-values {
-            // All directions
-            .#{$shortcut}-#{$name}#{$suffix} {
-                #{$property}: $value !important;
-            }
-            // Cardinal directions
-            @each $direction, $suffix in $spacing-directions {
-                .#{$shortcut}#{$suffix}-#{$name}#{$suffix} {
-                    #{$property}-#{$direction}: $value !important;
-                }
-            }
-            // Horizontal axis
-            @if $spacing-horizontal != null {
-                .#{$shortcut}#{$spacing-horizontal}-#{$name}#{$suffix} {
-                    #{$property}-left: $value !important;
-                    #{$property}-right: $value !important;
-                }
-            }
-            // Vertical axis
-            @if $spacing-vertical != null {
-                .#{$shortcut}#{$spacing-vertical}-#{$name}#{$suffix} {
-                    #{$property}-top: $value !important;
-                    #{$property}-bottom: $value !important;
-                }
-            }
-        }
-    }
-}
-
-@include mobile {
-    @include spacing-utilities("-mobile");
-}
-
-@include tablet {
-    @include spacing-utilities("-tablet");
-}
-
-@include touch {
-    @include spacing-utilities("-touch");
-}
-
-@include desktop {
-    @include spacing-utilities("-desktop");
-}
-
-@include widescreen {
-    @include spacing-utilities("-widescreen");
-}
-
-@include fullhd {
-    @include spacing-utilities("-fullhd");
-}
-
-@include tablet-only {
-    @include spacing-utilities("-tablet-only");
-}
-
-@include desktop-only {
-    @include spacing-utilities("-desktop-only");
-}
-
-@include widescreen-only {
-    @include spacing-utilities("-widescreen-only");
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.is-fullwidth {
-    width: 100%;
-}
-
-.is-fullheight {
-    height: 100%;
-}
-
-.fadeUp-enter-active,
-.fadeUp-leave-active {
-    transition: all 500ms ease-in-out;
-}
-
-.fadeUp-enter-from,
-.fadeUp-leave-to {
-    opacity: 0;
-    transform: translateY(5rem);
-}
-
-$grid-columns: 12;
-
-$grid-gaps: (
-    0: none,
-    1: 0.75rem,
-    2: 1rem,
-    3: 1.5rem,
-    4: 1.875rem,
-);
-
-@mixin grid-column($columns, $suffix: "") {
-    @for $columns from 1 to $grid-columns {
-        &.is-#{$columns}-columns#{$suffix} {
-            grid-template-columns: repeat($columns, 1fr);
-        }
-    }
-}
-
-@mixin grid-gap($columns, $suffix: "") {
-    @each $gap, $value in $grid-gaps {
-        &.is-#{$gap}-gap#{$suffix} {
-            gap: $value;
-        }
-    }
-}
-
-.grid {
-    display: grid;
-    gap: map.get($grid-gaps, 3);
-
-    @include grid-column($grid-columns);
-
-    @include fullhd() {
-        @include grid-column($grid-columns, "-fullhd");
-    }
-
-    @include widescreen-only() {
-        @include grid-column($grid-columns, "-widescreen-only");
-    }
-
-    @include widescreen() {
-        @include grid-column($grid-columns, "-widescreen");
-    }
-
-    @include desktop-only() {
-        @include grid-column($grid-columns, "-desktop-only");
-    }
-
-    @include desktop() {
-        @include grid-column($grid-columns, "-desktop");
-    }
-
-    @include touch() {
-        @include grid-column($grid-columns, "-touch");
-    }
-
-    @include tablet-only() {
-        @include grid-column($grid-columns, "-tablet-only");
-    }
-
-    @include tablet() {
-        @include grid-column($grid-columns, "-tablet");
-    }
-
-    @include mobile() {
-        @include grid-column($grid-columns, "-mobile");
+@media (max-width: 720px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
 }
