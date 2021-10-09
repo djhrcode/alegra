@@ -28,11 +28,19 @@
                 </div>
                 <div class="media-right">
                     <ButtonComponent
+                        class="is-hidden-touch"
                         @click="$emit('upvote')"
                         icon-right="la-thumbs-up"
                         :is-disabled="isDisabled"
                     >
                         Upvote
+                    </ButtonComponent>
+                    <ButtonComponent
+                        class="is-hidden-desktop"
+                        @click="$emit('upvote')"
+                        icon="la-thumbs-up"
+                        :is-disabled="isDisabled"
+                    >
                     </ButtonComponent>
                 </div>
             </div>

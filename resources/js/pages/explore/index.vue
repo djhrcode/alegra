@@ -30,7 +30,7 @@
                 ></SearchInput>
             </div>
         </div>
-        <masonry class="mt-6 is-fullwidth" :cols="3" :gutter="24">
+        <masonry class="mt-6 is-fullwidth" :cols="{default: 3, 1280: 2, 680: 1}" :gutter="24">
             <SellerImageCard
                 v-for="(image, index) in imagesListState"
                 :key="index"
