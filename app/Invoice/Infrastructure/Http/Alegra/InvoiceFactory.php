@@ -25,13 +25,14 @@ class InvoiceFactory
             );
 
         $invoice = Invoice::fromPrimitives(
-            $this->array->get($data, 'id'),
-            $this->array->get($data, 'seller.id'),
-            $this->array->get($data, 'client.id'),
-            $this->array->get($data, 'dueDate'),
-            $items->all(),
-            $this->array->get($data, 'date'),
-            $this->array->get($data, 'status'),
+            id: $this->array->get($data, 'id'),
+            sellerId: $this->array->get($data, 'seller.id'),
+            clientId: $this->array->get($data, 'client.id'),
+            dueDate: $this->array->get($data, 'dueDate'),
+            items: $items->all(),
+            date: $this->array->get($data, 'date'),
+            status: $this->array->get($data, 'status'),
+            url: $this->array->get($data, 'pdf'),
         );
 
         return $invoice;

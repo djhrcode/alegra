@@ -3,6 +3,7 @@
 namespace App\Contest\Domain;
 
 use App\Contest\Domain\ValueObjects\ContestId;
+use App\Contest\Domain\ValueObjects\ContestInvoiceUrl;
 use App\Contest\Domain\ValueObjects\ContestName;
 use App\Contest\Domain\ValueObjects\ContestStatus;
 use App\Contest\Domain\ValueObjects\ContestTotalPoints;
@@ -16,7 +17,8 @@ final class Contest
         private ContestName $name,
         private ContestStatus $status,
         private ContestVotes $votes,
-        private ?ContestWinnerId $winnerId = null
+        private ?ContestWinnerId $winnerId = null,
+        private ?ContestInvoiceUrl $invoiceUrl = null,
     ) {
     }
 
@@ -25,14 +27,16 @@ final class Contest
         string $name,
         string $status,
         int $votes = 0,
-        ?int $winnerId = null
+        ?int $winnerId = null,
+        ?string $invoiceUrl = null
     ): static {
         return new static(
             ContestId::fromValue($id),
             ContestName::fromValue($name),
             ContestStatus::fromValue($status),
             ContestVotes::fromValue($votes),
-            ContestWinnerId::fromValue($winnerId ?? -1),
+            $winnerId ? ContestWinnerId::fromValue($winnerId) : null,
+            $invoiceUrl ? ContestInvoiceUrl::fromValue($invoiceUrl) : null
         );
     }
 
@@ -59,5 +63,10 @@ final class Contest
     public function winnerId(): ?ContestWinnerId
     {
         return $this->winnerId;
+    }
+
+    public function invoiceUrl(): ?ContestInvoiceUrl
+    {
+        return $this->invoiceUrl;
     }
 }

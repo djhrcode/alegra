@@ -16,6 +16,7 @@ class ContestResource extends Resource
             'name' => $contest->name()->value(),
             'status' => $contest->status()->value(),
             'total_points' => $contest->totalPoints()->value(),
+            'invoice_url' => $contest->invoiceUrl()?->value(),
 
             'links' => [
                 'results' => route('contests.results.list', $contest->id()->value()),

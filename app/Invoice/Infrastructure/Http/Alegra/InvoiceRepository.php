@@ -21,8 +21,6 @@ class InvoiceRepository implements InvoiceRepositoryInterface
         $response = $this->httpClient->get("invoices/{$id->value()}", ['fields' => 'pdf']);
         $response->throw();
 
-        dump($response->json());
-
         return $this->invoiceFactory->create($response->json());
     }
 

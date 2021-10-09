@@ -10,17 +10,20 @@ use App\Contest\Domain\ValueObjects\ContestId;
 use App\Contest\Domain\ValueObjects\ContestResultPosition;
 use App\Contest\Domain\ValueObjects\ContestResultWinnerId;
 use App\Contest\Domain\ValueObjects\ContestStatus;
+use App\Invoice\Domain\InvoiceRepository;
 use App\Invoice\Domain\ValueObjects\InvoiceId;
 use App\Seller\Domain\Seller;
 use App\Seller\Domain\ValueObjects\SellerId;
 use App\Seller\Infrastructure\Persistence\Eloquent\SellerModel;
+use App\Setting\Domain\Contest\ContestActiveIdSetting;
 use Illuminate\Database\Eloquent\Builder;
 
 class ContestRepository implements ContestRepositoryInterface
 {
     public function __construct(
         private ContestModel $model,
-        private SellerModel $seller
+        private SellerModel $seller,
+        private InvoiceRepository $invoices,
     ) {
     }
 
@@ -33,6 +36,11 @@ class ContestRepository implements ContestRepositoryInterface
     public function find(ContestId $contestId): ?Contest
     {
         $contestFound = $this->newBaseQuery()->find($contestId->value());
+        $invoiceFound = null;
+
+        if ($contestFound->invoice_id)
+            $invoiceFound = $this->invoices
+                ->find(InvoiceId::fromValue($contestFound->invoice_id));
 
         if (is_null($contestFound))
             return null;
@@ -42,7 +50,8 @@ class ContestRepository implements ContestRepositoryInterface
             $contestFound->name,
             $contestFound->status,
             $contestFound->votes_count,
-            $contestFound->winner_id
+            $contestFound->winner_id,
+            $invoiceFound?->url()?->value()
         );
     }
 

@@ -8,6 +8,7 @@ use App\Invoice\Domain\ValueObjects\InvoiceDueDate;
 use App\Invoice\Domain\ValueObjects\InvoiceId;
 use App\Invoice\Domain\ValueObjects\InvoiceSellerId;
 use App\Invoice\Domain\ValueObjects\InvoiceStatus;
+use App\Invoice\Domain\ValueObjects\InvoiceUrl;
 
 final class Invoice
 {
@@ -18,7 +19,8 @@ final class Invoice
         private InvoiceDueDate $dueDate,
         private ?InvoiceItemCollection $items = null,
         private ?InvoiceDate $date = null,
-        private ?InvoiceStatus $status = null
+        private ?InvoiceStatus $status = null,
+        private ?InvoiceUrl $url = null,
     ) {
         $this->items = $items ?? InvoiceItemCollection::fromValue([]);
         $this->date = $date ?? InvoiceDate::fromValue(now());
@@ -32,7 +34,8 @@ final class Invoice
         string $dueDate,
         array $items = [],
         ?string $date = null,
-        ?string $status = null
+        ?string $status = null,
+        ?string $url = null,
     ): static {
         return new static(
             InvoiceId::fromValue($id),
@@ -42,6 +45,7 @@ final class Invoice
             InvoiceItemCollection::fromValue($items),
             InvoiceDate::fromValue($date ?? now()),
             InvoiceStatus::fromValue($status ?? InvoiceStatus::DRAFT),
+            $url ? InvoiceUrl::fromValue($url) : null
         );
     }
 
@@ -78,5 +82,10 @@ final class Invoice
     public function items(): InvoiceItemCollection
     {
         return $this->items;
+    }
+
+    public function url(): ?InvoiceUrl
+    {
+        return $this->url;
     }
 }
