@@ -26,8 +26,9 @@
         </div>
 
         <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
+            <div v-if="authService.status()" class="navbar-start">
                 <RouterLink
+
                     v-for="(link, index) in links"
                     :key="index"
                     :to="link.to"
@@ -38,18 +39,15 @@
             </div>
 
             <div class="navbar-end">
-
-                <button class="navbar-item">
-                    Logout
-                    <span class="icon is-right">
-                        <i class="las la-sign-out-alt"></i>
-                    </span>
-                </button>
-                <img
-                    class="my-auto"
-                    src="@/assets/img/powered-by-alegra-logo.svg"
-                    style="min-height: 24px; max-height: 24px"
-                />
+                <ButtonComponent
+                    v-if="authService.status()"
+                    @click="onClickLogoutButton"
+                    type="inverted"
+                    color="secondary"
+                    icon-right="la-sign-out-alt"
+                >
+                    Cerrar sesión
+                </ButtonComponent>
             </div>
         </div>
     </nav>
@@ -58,8 +56,14 @@
 <script>
 import { Routes } from "@/plugins/router";
 import { defineComponent, markRaw } from "@vue/runtime-core";
+import ButtonComponent from "@/components/elements/Button/ButtonComponent.vue";
+import { useAuthenticationService } from "@/models/Authentication/AuthenticationService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
+    components: {
+        ButtonComponent,
+    },
     data: () => ({
         links: markRaw([
             {
@@ -72,5 +76,19 @@ export default defineComponent({
             },
         ]),
     }),
+
+    setup() {
+        const router = useRouter();
+        const authService = useAuthenticationService();
+
+        const onClickLogoutButton = () => {
+            authService
+                .logout()
+                .then(() => router.push({ name: Routes.Login }));
+        };
+
+
+        return { authService, onClickLogoutButton };
+    },
 });
 </script>
