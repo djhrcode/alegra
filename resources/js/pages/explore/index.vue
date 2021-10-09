@@ -57,6 +57,9 @@ import { useSellerService } from "@/models/Seller/SellerService.js";
 import { useNotificationStore } from "@/models/Notification/NotificationStore";
 import { createNotification } from "@/models/Notification/NotificationFactories";
 import { createSellerImage } from "@/models/Seller/SellerImage";
+import { useContestClient } from "@/models/Contest/ContestClient";
+import { Routes } from "@/plugins/router";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
     components: {
@@ -67,8 +70,11 @@ export default defineComponent({
     },
 
     setup() {
+        const router = useRouter();
+
         const sellerService = useSellerService();
         const notificationStore = useNotificationStore();
+        const contestClient = useContestClient();
 
         /**
          * Upvote business logic
@@ -85,6 +91,8 @@ export default defineComponent({
         /**
          * Image searching business logic
          */
+
+        const searchInputQuery = ref(false);
         const imagesListState = ref([]);
         const isSearchLoadingState = ref(false);
 
@@ -152,13 +160,21 @@ export default defineComponent({
             imagesListState.value.splice(index, 1, newSellerState);
         };
 
-        const upvotePictureBySellerId = async (sellerId, index) => {
+        const checkIfContestHasFinished = async () => {
+            const contest = await contestClient.getActiveContest();
+
+            if (contest.status === "closed")
+                router.push({ name: Routes.Finished });
+        };
+
+        const upvotePictureBySellerId = (sellerId, index) => {
             startUpvotingProcess();
 
-            await sellerService
+            return sellerService
                 .upVote(sellerId)
                 .then(hydrateSellerImageState.bind(null, index))
                 .then(finishUpvotingProcess.bind(null, index))
+                .then(checkIfContestHasFinished)
                 .catch(stopWithErrorUpvotingProcess);
         };
 
@@ -169,6 +185,16 @@ export default defineComponent({
             imagesListState.value = await sellerService
                 .search({ query })
                 .finally(stopSearchLoading);
+
+            if (imagesListState.value.length) return;
+
+            notificationStore.notify({
+                delay: 6000,
+                color: "accent",
+                title: "Mmm, no hemos encontrado nada para esta busqueda",
+                message:
+                    "Intenta realizar otra búsqueda nuevamente ",
+            });
         };
 
         const heroSectionStyle = computed(() => ({
@@ -188,6 +214,7 @@ export default defineComponent({
         };
 
         return {
+            searchInputQuery,
             imagesListState,
             imagesListIsEmpty,
             heroSectionStyle,
