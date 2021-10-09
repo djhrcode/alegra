@@ -2,7 +2,10 @@
     <div class="seller-progress-card card is-shadowless mb-1">
         <div class="card-content px-0">
             <div class="has-text-centered">
-                <div class="seller-progress-card__progress mx-auto" :style="progressDynamicStyle">
+                <div
+                    class="seller-progress-card__progress mx-auto"
+                    :style="progressDynamicStyle"
+                >
                     <figure
                         class="
                             seller-progress-card__image
@@ -59,12 +62,17 @@ export default defineComponent({
             default: 50,
             type: Number,
         },
+        progressColor: {
+            default: "#00b19d",
+            type: String,
+        },
     },
     setup(props) {
+        const percentageToDegs = () => (360 / 100) * props.progressPercentage;
+
         const progressDynamicStyle = computed(() => ({
-            "--progress-bar-position": `${
-                (360 / 100) * props.progressPercentage
-            }deg`,
+            "--progress-bar-color": props.progressColor,
+            "--progress-bar-position": `${percentageToDegs()}deg`,
         }));
 
         return { progressDynamicStyle };
@@ -79,11 +87,12 @@ export default defineComponent({
 .seller-progress-card {
     & &__progress {
         --progress-bar-position: 190deg;
+        --progress-bar-color: #00b19d;
 
         transition: all 200ms ease-in-out;
         padding: 0.5rem;
         background: conic-gradient(
-            #00b19d 0deg var(--progress-bar-position),
+            var(--progress-bar-color) 0deg var(--progress-bar-position),
             #e5e5e5 var(--progress-bar-position) 360deg
         );
         max-width: min-content;
