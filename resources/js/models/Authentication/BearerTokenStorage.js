@@ -14,7 +14,7 @@ export function useBearerTokenStorage() {
     }
 
     function removeToken() {
-        window.localStorage.setItem(BEARER_TOKEN_STORAGE);
+        window.localStorage.removeItem(BEARER_TOKEN_STORAGE);
     }
 
     return { hasToken, setToken, getToken, removeToken };

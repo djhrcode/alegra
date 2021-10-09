@@ -53,6 +53,10 @@ export function useAuthenticationService() {
         return authHttpClient.register(authenticable).then(onSuccessResponse);
     }
 
+    function status() {
+        return authStateStore.checkStatus();
+    }
+
     function account() {
         return authStateStore.hasAccount()
             ? authStateStore.state.account
@@ -80,6 +84,7 @@ export function useAuthenticationService() {
         login,
         register,
 
+        status,
         account,
         checkStatus,
     };

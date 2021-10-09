@@ -1,7 +1,33 @@
 import { HTTPError } from "ky";
-import { expectsHttpCodeToBe, UNPROCESSABLE_ENTITY_HTTP_ERROR } from "../status";
+import {
+    expectsHttpCodeToBe,
+    UNPROCESSABLE_ENTITY_HTTP_ERROR,
+} from "../status";
+
+/**
+ *
+ * @param {{ message: String, errors: {[key:string]: string[]}}} param0
+ * @returns
+ */
+const createValidationErrorResponse = ({
+    message = String(),
+    errors = {},
+}) => ({
+    errors,
+    message,
+
+    getFirstError() {
+        return Object.values(errors)?.at(0)?.at(0) ?? null;
+    },
+
+    getFirstErrorFor(field) {
+        return errors[field][0] ?? null;
+    },
+});
 
 export class UnprocessableEntityHttpError extends HTTPError {
+    #jsonResponse = null;
+
     /**
      * @param {Response} response
      * @param {Request} request
@@ -11,8 +37,11 @@ export class UnprocessableEntityHttpError extends HTTPError {
         super(response, request, options);
     }
 
-    json() {
-        return createValidationErrorResponse(this.response.json());
+    async json() {
+        if (!this.#jsonResponse)
+            this.#jsonResponse = await this.response.json();
+
+        return createValidationErrorResponse(this.#jsonResponse);
     }
 
     /**

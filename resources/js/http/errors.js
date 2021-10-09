@@ -33,10 +33,10 @@ const errorStatusCodesMap = {
  */
 export const throwCorrespondingError = (
     statusCode,
-    response,
     request,
-    options
+    options,
+    response
 ) => {
     if (statusCode in errorStatusCodesMap)
-        throw new errorStatusCodesMap[status](response, request, options);
+        throw new errorStatusCodesMap[statusCode](response, request, options);
 };

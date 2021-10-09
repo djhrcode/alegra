@@ -7,6 +7,7 @@ import { throwCorrespondingError } from "../errors";
  * @type {import("ky").AfterResponseHook}
  */
 export const VerifyErrorTypeHttpHook = (request, options, response) => {
+    console.log("Error arguments", request, options, response)
     if (!response.ok)
         throwCorrespondingError(response.status, request, options, response);
 };
