@@ -1,7 +1,7 @@
 <template>
     <div
         class="
-            container pt-6
+            pt-6 mx-auto
             is-fullheight
             is-flex
             is-flex-direction-column

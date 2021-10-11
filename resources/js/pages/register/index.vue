@@ -1,12 +1,11 @@
 <template>
     <div
         class="
-            container
             is-fullheight
             is-flex
             is-flex-direction-column
             is-justify-content-center
-            pt-6 pt-4-mobile
+            pt-6 pt-4-mobile mx-auto
         "
         style="max-width: 460px"
     >

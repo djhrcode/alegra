@@ -13,6 +13,7 @@
             </a>
 
             <a
+                v-if="authService.status()"
                 role="button"
                 aria-label="menu"
                 :aria-expanded="isMenuExpanded"
@@ -25,8 +26,8 @@
             </a>
         </div>
 
-        <div :class="expandibleMenuClasses">
-            <div v-if="authService.status()" class="navbar-start">
+        <div v-if="authService.status()" :class="expandibleMenuClasses">
+            <div class="navbar-start">
                 <RouterLink
                     v-for="(link, index) in links"
                     :key="index"
@@ -39,7 +40,6 @@
 
             <div class="navbar-end">
                 <ButtonComponent
-                    v-if="authService.status()"
                     @click="onClickLogoutButton"
                     type="inverted"
                     color="secondary"
