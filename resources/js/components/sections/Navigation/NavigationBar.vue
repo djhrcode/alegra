@@ -14,10 +14,10 @@
 
             <a
                 role="button"
-                class="navbar-burger"
                 aria-label="menu"
-                aria-expanded="false"
-                data-target="navbarBasicExample"
+                :aria-expanded="isMenuExpanded"
+                :class="buttonMenuClasses"
+                @click="toggleNavigationMenu"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
@@ -25,10 +25,9 @@
             </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div :class="expandibleMenuClasses">
             <div v-if="authService.status()" class="navbar-start">
                 <RouterLink
-
                     v-for="(link, index) in links"
                     :key="index"
                     :to="link.to"
@@ -54,11 +53,11 @@
 </template>
 
 <script>
+import { computed, defineComponent, markRaw, ref } from "@vue/runtime-core";
 import { Routes } from "@/plugins/router";
-import { defineComponent, markRaw } from "@vue/runtime-core";
-import ButtonComponent from "@/components/elements/Button/ButtonComponent.vue";
 import { useAuthenticationService } from "@/models/Authentication/AuthenticationService";
 import { useRouter } from "vue-router";
+import ButtonComponent from "@/components/elements/Button/ButtonComponent.vue";
 
 export default defineComponent({
     components: {
@@ -78,8 +77,16 @@ export default defineComponent({
     }),
 
     setup() {
+        /**
+         * External services & features
+         */
         const router = useRouter();
         const authService = useAuthenticationService();
+
+        /**
+         * Internal component state & methods
+         */
+        const isMenuExpanded = ref(false);
 
         const onClickLogoutButton = () => {
             authService
@@ -87,8 +94,29 @@ export default defineComponent({
                 .then(() => router.push({ name: Routes.Login }));
         };
 
+        const toggleNavigationMenu = () => {
+            isMenuExpanded.value = !isMenuExpanded.value;
+        };
 
-        return { authService, onClickLogoutButton };
+        const buttonMenuClasses = computed(() => ({
+            "navbar-burger": true,
+            "is-active": isMenuExpanded.value,
+        }));
+
+        const expandibleMenuClasses = computed(() => ({
+            "navbar-menu": true,
+            "is-active": isMenuExpanded.value,
+        }));
+
+        return {
+            authService,
+            onClickLogoutButton,
+
+            isMenuExpanded,
+            buttonMenuClasses,
+            expandibleMenuClasses,
+            toggleNavigationMenu,
+        };
     },
 });
 </script>
