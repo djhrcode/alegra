@@ -9,7 +9,7 @@ use App\User\Domain\ValueObjects\UserId;
 interface SellerRepository
 {
     public function find(SellerId $id): ?Seller;
-    public function create(Seller $user): void;
+    public function create(Seller $user): Seller;
     public function update(SellerId $sellerId, Seller $seller): void;
     public function delete(SellerId $id): void;
     public function upvote(UserId $upvoterId, SellerId $sellerId, ContestId $contestId): Seller;
