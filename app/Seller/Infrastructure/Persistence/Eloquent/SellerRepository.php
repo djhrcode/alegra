@@ -90,11 +90,13 @@ final class SellerRepository implements SellerRepositoryInterface
         return $this->transformToDomain($sellerFound);
     }
 
-    public function create(Seller $seller): void
+    public function create(Seller $seller): Seller
     {
         $sellerModel = $this->transformToModel($seller);
 
         $sellerModel->saveOrFail();
+
+        return $this->transformToDomain($sellerModel);
     }
 
     public function update(SellerId $sellerId, Seller $seller): void
