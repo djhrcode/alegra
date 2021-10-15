@@ -29,7 +29,7 @@ final class SellerRepository implements SellerRepositoryInterface
     ) {
     }
 
-    private function newBaseQuery(): Builder
+    public function newBaseQuery(): Builder
     {
         return $this->model->newQuery()->withCount([
             'votes' => fn (Builder $query) => $query->where('contest_id', $this->activeContestId->value()),

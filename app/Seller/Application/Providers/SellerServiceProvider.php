@@ -4,6 +4,7 @@ namespace App\Seller\Application\Providers;
 
 use App\Seller\Domain\SellerRepository;
 use App\Seller\Domain\ValueObjects\SellerWinningPoints;
+use App\Seller\Infrastructure\Facade\SellerRepository as FacadeSellerRepository;
 use App\Seller\Infrastructure\Persistence\Eloquent\SellerRepository as EloquentSellerRepository;
 use App\Setting\Domain\SettingRepository;
 use App\Setting\Domain\ValueObjects\SettingName;
@@ -18,7 +19,7 @@ class SellerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(SellerRepository::class, EloquentSellerRepository::class);
+        $this->app->bind(SellerRepository::class, FacadeSellerRepository::class);
 
 
         $this->app->singleton(SellerWinningPoints::class, function () {
